@@ -15,7 +15,7 @@ class TipoCulinariaAdmin(admin.ModelAdmin):
 
 @admin.register(Receita)
 class ReceitaAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'tipo', 'ingredientes')
+    list_display = ('nome', 'tipo')
 
 
 @admin.register(UnidadeMedida)
@@ -25,7 +25,7 @@ class UnidadeMedidaAdmin(admin.ModelAdmin):
 
 @admin.register(Produto)
 class ProdutoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'quantidade', 'unidade', 'receitas')
+    list_display = ('nome', 'quantidade', 'unidade')
 
 
 @admin.register(Preco)
@@ -64,9 +64,14 @@ class AulaReceitaAdmin(admin.ModelAdmin):
 
 @admin.register(Aula)
 class AulaAdmin(admin.ModelAdmin):
-    list_display = ('TURNO_CHOICE', 'data', 'turno', 'disciplina', 'professor', 'laboratorio', 'qtd_aluno', 'confirmada', 'receitas')
+    list_display = ('TURNO_CHOICE', 'data', 'turno', 'disciplina', 'professor', 'laboratorio', 'qtd_aluno', 'confirmada')
 
 
 @admin.register(Movimento)
 class MovimentoAdmin(admin.ModelAdmin):
     list_display = ('TIPO_CHOICE', 'produto', 'tipo', 'quantidade')
+
+
+@admin.register(ItemNotaFiscal)
+class ItemNotaFiscalAdmin(admin.ModelAdmin):
+    list_display = ('notafiscal', 'produto', 'preco_unitario', 'quantidade')

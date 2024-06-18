@@ -94,6 +94,7 @@ class UnidadeMedida(Base):
 
 
 class Produto(Base):
+    objects = None
     nome = models.CharField(max_length=100, blank=False, unique=True, null=False,
                             db_comment='Nome do produto')
     quantidade = models.DecimalField(default=0, max_digits=11, decimal_places=5,
@@ -255,6 +256,7 @@ class AulaReceita(Base):
 
 
 class Aula(Base):
+    objects = None
     TURNO_CHOICE = (
         ('M', 'Manhã'),
         ('T', 'Tarde'),
@@ -297,12 +299,13 @@ class Movimento(Base):
         ('E', 'Entrada'),
         ('S', 'Saída'),
         ('A', 'Ajuste de auditoria'),
+        ('D', 'Devolução')
     )
     produto = models.ForeignKey(Produto, on_delete=models.RESTRICT,
                                 db_comment='Ligação com a tabela de produto')
     tipo = models.CharField(max_length=1, blank=False, null=False,
                             db_comment='Tipo do movimento', choices=TIPO_CHOICE)
-    quantidade = models.DecimalField(blank=False, null=False, max_digits=9, decimal_places=2,
+    quantidade = models.DecimalField(blank=False, null=False, max_digits=9, decimal_places=5,
                                      db_comment='Quantidade movimentada')
 
     def __str__(self):
@@ -316,3 +319,32 @@ class Movimento(Base):
         )
         db_table = 'movimento'
         ordering = ['produto', 'tipo']
+
+
+class ItemNotaFiscal(Base):
+    notafiscal = models.ForeignKey(NotaFiscal, on_delete=models.RESTRICT,
+                                   db_comment='ligacao com a tabela de nota fiscal')
+    produto = models.ForeignKey(Produto, on_delete=models.RESTRICT,
+                                   db_comment='ligacao com a tabela de produtos')
+    preco_unitario = models.DecimalField(max_digits=9, decimal_places=2,
+                                db_comment='preço unitário do produto',
+                                blank=False, null=False
+                                )
+    quantidade = models.DecimalField(max_digits=11, decimal_places=5,
+                                     db_comment='Quantidade comprada',
+                                     blank=False, null=False
+                                     )
+
+    def __str__(self):
+        return "Nota Fiscal: " + str(self.notafiscal) + ", Produto: " + str(self.produto)
+
+    class Meta:
+        verbose_name = 'Item da Nota Fiscal'
+        verbose_name_plural = 'Itens da Notas Fiscais'
+        indexes = (
+            models.Index(fields=('notafiscal',)),
+            models.Index(fields=('produto',)),
+        )
+        db_table = 'itemnotafiscal'
+        ordering = ['notafiscal', 'produto']
+        unique_together = ['notafiscal', 'produto']

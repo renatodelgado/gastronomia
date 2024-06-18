@@ -1,20 +1,36 @@
-from django.urls import path
+from django.urls import path  # Para usar o template criado
 from .views import *
+from rest_framework.routers import SimpleRouter
+
+
+router = SimpleRouter()
+
+
+router.register('receitasingrediente', ReceitaIngredienteViewSet)
+router.register('tiposculinaria', TipoCulinariaViewSet)
+router.register('receitas', ReceitaViewSet)
+router.register('unidadesmedida', UnidadeMedidaViewSet)
+router.register('produtos', ProdutoViewSet)
+router.register('precos', PrecoViewSet)
+router.register('professores', ProfessorViewSet)
+router.register('disciplinas', DisciplinaViewSet)
+router.register('fornecedores', FornecedorViewSet)
+router.register('notasfiscais', NotaFiscalViewSet)
+router.register('laboratorios', LaboratorioViewSet)
+router.register('aulasreceitas', AulaReceitaViewSet)
+router.register('aulas', AulaViewSet)
+router.register('movimentos', MovimentoViewSet)
+router.register('itensnotasfiscais', ItemNotaFiscalViewSet)
+
+
 
 urlpatterns = [
-    path('receitaingrediente/', ReceitaIngredienteViewSet.as_view(), name = 'receitaingrediente'),
-    path('tipoculinaria/', TipoCulinariaViewSet.as_view(), name = 'tipoculinaria'),
-    path('receita/', ReceitaViewSet.as_view(), name = 'receita'),
-    path('unidademedida/', UnidadeMedidaViewSet.as_view(), name = 'unidademedida'),
-    path('produto/', ProdutoViewSet.as_view(), name = 'produto'),
-    path('preco/', PrecoViewSet.as_view(), name = 'preco'),
-    path('professor/', ProfessorViewSet.as_view(), name = 'professor'),
-    path('disciplina/', DisciplinaViewSet.as_view(), name = 'disciplina'),
-    path('fornecedor/', FornecedorViewSet.as_view(), name = 'fornecedor'),
-    path('notafiscal/', NotaFiscalViewSet.as_view(), name = 'notafiscal'),
-    path('laboratorio/', LaboratorioViewSet.as_view(), name = 'laboratorio'),
-    path('aulareceita/', AulaReceitaViewSet.as_view(), name = 'aulareceita'),
-    path('aula/', AulaViewSet.as_view(), name = 'aula'),
-    path('movimento/', MovimentoViewSet.as_view(), name = 'movimento'),
-    path('', index)
+    path("", index),
+    path('custosdiario/', CustoDiarioApiView.as_view(), name='custosdiario'),
+    path('posicaoestoque/', PosicaoEstoqueApiView.as_view(), name='posicaoestoque'),
+    path('confirmaaula/<int:pk>/', ConfirmaAulaApiView.as_view(), name='confirmaaula'),
+    path('cancelaaula/<int:pk>/', CancelaAulaApiView.as_view(), name='cancelaaula'),
+    path('detalhesaula/<int:pk>/', DetalhesAulaApiView.as_view(), name='detalhesaula'),
+    path('necessidadecompra/', NecessidadeCompraApiView.as_view(), name='necessidadecompra'),
+    path('entradanota/', EntradaNotaFiscalApiView.as_view(), name='entradanota'),
 ]
