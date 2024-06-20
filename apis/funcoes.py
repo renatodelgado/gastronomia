@@ -46,6 +46,8 @@ def receitasaula(aula_id):
     # ************
     # Receitas da aula
     # ************
+    if isinstance(aula_id, int):
+        aula_id = [aula_id]
     aulas_receita = AulaReceita.objects.filter(aula_id__in = aula_id, ativo = True)
     df_aulas_receita = read_frame(aulas_receita)
     df_aulas_receita['id_receita'] = aulas_receita.values_list('receita_id', flat = True)
@@ -66,6 +68,8 @@ def receitasaula(aula_id):
 
 
 def produtosaula(aula_id):
+    if isinstance(aula_id, int):
+        aula_id = [aula_id]
     # ************
     # Ingredientes usados na aula
     # ************

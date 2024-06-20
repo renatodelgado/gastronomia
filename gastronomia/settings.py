@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'apis',
 
     'rest_framework',
-    'django_filters'
+    'django_filters',
+    'rest_framework.authtoken'  # Aqui se diz que usará a utilização por token
 ]
 
 MIDDLEWARE = [
@@ -139,11 +140,25 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Configura o método de autenticação (verificação de quem está usando)
 # e permissão (o que a pessoa pode fazer/se autenticado, faz tudo
 # caso contrário, ela pode apenas ler) da api
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        # Aqui, estou me autenticando por usuário/senha pela sessão - exige tela de login.
+        # O padrão hoje em dia é utilizar o conceito de token - chave é dada para o usuário
+        # A chave é usada quando for chamar a api
+        'rest_framework.authentication.TokenAuthentication',
+        # Para autenticar por token, o Django Rest Framework tem uma aplicação própria
+        # Deve ser executado o python manage.py migrate após isso
+        # Token deve ser gerado no admin
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        # Não tendo outra classe, essa vale / autenticado faz tudo, não autenticado só lê
+        # Se não colocar controle na view, vale essa
     ]
 }
+
+# Como o projeto Django vai se comportar. No primeiro, como se comportará na autenticação e,
+# no segundo, como

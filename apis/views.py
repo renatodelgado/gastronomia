@@ -3,11 +3,12 @@ from datetime import date, datetime
 from dateutil.parser import parse
 from django.db import transaction
 from django.utils.dateparse import parse_date
-from rest_framework import generics, viewsets, status
+from rest_framework import generics, viewsets, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .funcoes import *
+from .permissions import *
 from .models import *
 from .serializers import *
 from django.shortcuts import render
@@ -22,6 +23,7 @@ def index(request):
 
 
 class ReceitaIngredienteViewSet(viewsets.ModelViewSet):  # Crud completo é feito dessa forma
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = ReceitaIngrediente.objects.filter(ativo = True)
     serializer_class = ReceitaIngredienteSerializer
 
@@ -35,6 +37,7 @@ class ReceitaIngredienteViewSet(viewsets.ModelViewSet):  # Crud completo é feit
 
 
 class TipoCulinariaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = TipoCulinaria.objects.filter(ativo = True)
     serializer_class = TipoCulinariaSerializer
 
@@ -47,6 +50,7 @@ class TipoCulinariaViewSet(viewsets.ModelViewSet):
 
 
 class ReceitaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Receita.objects.filter(ativo = True)
     serializer_class = ReceitaSerializer
 
@@ -59,6 +63,7 @@ class ReceitaViewSet(viewsets.ModelViewSet):
 
 
 class UnidadeMedidaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = UnidadeMedida.objects.filter(ativo = True)
     serializer_class = UnidadeMedidaSerializer
 
@@ -71,6 +76,7 @@ class UnidadeMedidaViewSet(viewsets.ModelViewSet):
 
 
 class ProdutoViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Produto.objects.filter(ativo = True)
     serializer_class = ProdutoSerializer
 
@@ -83,6 +89,7 @@ class ProdutoViewSet(viewsets.ModelViewSet):
 
 
 class PrecoViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Preco.objects.filter(ativo = True)
     serializer_class = PrecoSerializer
 
@@ -91,6 +98,7 @@ class PrecoViewSet(viewsets.ModelViewSet):
 
 
 class ProfessorViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Professor.objects.filter(ativo = True)
     serializer_class = ProfessorSerializer
 
@@ -103,6 +111,7 @@ class ProfessorViewSet(viewsets.ModelViewSet):
 
 
 class DisciplinaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Disciplina.objects.filter(ativo = True)
     serializer_class = DisciplinaSerializer
 
@@ -115,6 +124,7 @@ class DisciplinaViewSet(viewsets.ModelViewSet):
 
 
 class FornecedorViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Fornecedor.objects.filter(ativo = True)
     serializer_class = FornecedorSerializer
 
@@ -127,6 +137,7 @@ class FornecedorViewSet(viewsets.ModelViewSet):
 
 
 class NotaFiscalViewSet(viewsets.ReadOnlyModelViewSet):  # Apenas lista
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = NotaFiscal.objects.filter(ativo = True)
     serializer_class = NotaFiscalSerializer
 
@@ -139,6 +150,7 @@ class NotaFiscalViewSet(viewsets.ReadOnlyModelViewSet):  # Apenas lista
 
 
 class LaboratorioViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Laboratorio.objects.filter(ativo = True)
     serializer_class = LaboratorioSerializer
 
@@ -151,6 +163,7 @@ class LaboratorioViewSet(viewsets.ModelViewSet):
 
 
 class AulaReceitaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = AulaReceita.objects.filter(ativo = True)
     serializer_class = AulaReceitaSerializer
 
@@ -163,6 +176,7 @@ class AulaReceitaViewSet(viewsets.ModelViewSet):
 
 
 class AulaViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Aula.objects.filter(ativo = True)
     serializer_class = AulaSerializer
 
@@ -175,6 +189,7 @@ class AulaViewSet(viewsets.ModelViewSet):
 
 
 class MovimentoViewSet(viewsets.ModelViewSet):
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = Movimento.objects.filter(ativo = True)
     serializer_class = MovimentoSerializer
 
@@ -203,6 +218,7 @@ class MovimentoViewSet(viewsets.ModelViewSet):
 
 
 class ItemNotaFiscalViewSet(viewsets.ReadOnlyModelViewSet):  # Apenas lista
+    permission_classes = (permissions.DjangoModelPermissions,)
     queryset = ItemNotaFiscal.objects.filter(ativo = True)
     serializer_class = ItemNotaFiscalSerializer
 
@@ -215,6 +231,7 @@ class ItemNotaFiscalViewSet(viewsets.ReadOnlyModelViewSet):  # Apenas lista
 
 
 class DetalhesAulaApiView(generics.RetrieveAPIView):
+    permission_classes = (IsDepartamentoPedagogico, IsProfessor)
     serializer_class = AulaSerializer
     queryset = Aula.objects.select_related(
         'disciplina',
@@ -224,6 +241,10 @@ class DetalhesAulaApiView(generics.RetrieveAPIView):
 
     def get(self, request, *args, **kwargs):
         aula = self.get_object()
+
+        # ************************************
+        # Informações da aula
+        # ************************************
         dados = aula.__dict__
         df_aula = pd.DataFrame([dados])
         df_aula['professor'] = aula.professor
@@ -251,6 +272,7 @@ class DetalhesAulaApiView(generics.RetrieveAPIView):
 
 
 class PosicaoEstoqueApiView(APIView):
+    permission_classes = (IsFinanceiro,)
     def get(self, request):
         df_estoque = posicaoestoque()
         colunas = ['nome', 'unidade', 'quantidade', 'preco_medio', 'total']
@@ -262,6 +284,7 @@ class PosicaoEstoqueApiView(APIView):
 
 
 class NecessidadeCompraApiView(APIView):
+    permission_classes = (IsFinanceiro,)  # É possível colocar mais de uma
     def get(self, request, format=None):
         data = request.query_params.get('data')
         confirmada = request.query_params.get('data')
@@ -309,6 +332,7 @@ class NecessidadeCompraApiView(APIView):
 
 
 class EntradaNotaFiscalApiView(generics.CreateAPIView):
+    permission_classes = (IsFinanceiro,)
     queryset = None
     serializer_class = EntradaNotaFiscalSerializer
 
@@ -381,6 +405,7 @@ class EntradaNotaFiscalApiView(generics.CreateAPIView):
 
 class ConfirmaAulaApiView(generics.UpdateAPIView):  # Dois verbos associados a update: push e put
     # Push = apenas alguns (ALTERAÇÃO PARCIAL) / Put = qualquer coisa
+    permission_classes = (IsDepartamentoPedagogico,)
     queryset = Aula.objects.all()  # Usar todas as aulas
     serializer_class = AulaSerializer  # O Id da aula é passado dentro da url (<int:pk>)
 
@@ -411,6 +436,7 @@ class ConfirmaAulaApiView(generics.UpdateAPIView):  # Dois verbos associados a u
 
 
 class CancelaAulaApiView(generics.UpdateAPIView):
+    permission_classes = (IsDepartamentoPedagogico,)
     queryset = Aula.objects.all()
     serializer_class = AulaSerializer
 
@@ -441,6 +467,7 @@ class CancelaAulaApiView(generics.UpdateAPIView):
 
 
 class CustoDiarioApiView(APIView):
+    permission_classes = (IsFinanceiro,)
     def get(self, request):
         aulas = Aula.objects.all()
         df_aula = read_frame(aulas)

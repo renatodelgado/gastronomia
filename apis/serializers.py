@@ -159,7 +159,7 @@ class EntradaNotaFiscalSerializer(serializers.Serializer):
 class ProdutoItemSerializer(serializers.Serializer):
     ingrediente = serializers.CharField(max_length = 100)
     unidade = serializers.CharField(max_length = 100)
-    qtd_ingredientes = serializers.DecimalField(decimal_places = 5, max_digits = 15)
+    qtd_ingrediente = serializers.DecimalField(decimal_places = 5, max_digits = 15)
     custo = serializers.DecimalField(decimal_places = 2, max_digits = 11)
 
 
